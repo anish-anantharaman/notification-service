@@ -14,7 +14,6 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import java.util.logging.Logger;
 
 @Service
-
 public class EmailService {
 
     @Autowired
