@@ -13,7 +13,6 @@ import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("api/v1")
-
 public class EmailController {
 
     @Autowired
@@ -43,7 +42,8 @@ public class EmailController {
     @PostMapping("/send-template-email")
     public ResponseEntity<Object> sendTemplateEmail(@RequestBody EmailRequest emailRequest) {
         try {
-            boolean response = emailService.sendTemplateEmail(emailRequest.getToEmail(),emailRequest.getSubject(),emailRequest.getMessage(), emailRequest.getButtonUrl());
+            boolean response = emailService.sendTemplateEmail(emailRequest.getToEmail(),emailRequest.getSubject(),
+                    emailRequest.getMessage(), emailRequest.getButtonUrl());
             if(response) {
                 LOGGER.info("Email sent successfully");
                 return ProjectUtil.success(Boolean.TRUE);
