@@ -1,4 +1,5 @@
 package com.service.NotificationService.conf;
+import com.service.NotificationService.util.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.TemplateEngine;
@@ -15,7 +16,7 @@ public class ThymeleafConfig {
         templateResolver.setPrefix("classpath:/templates/");
         templateResolver.setSuffix(".html");
         templateResolver.setTemplateMode(TemplateMode.HTML);
-        templateResolver.setCharacterEncoding("UTF-8");
+        templateResolver.setCharacterEncoding(Constants.UTF8);
         return templateResolver;
     }
 

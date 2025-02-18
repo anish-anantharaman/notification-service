@@ -2,6 +2,7 @@ package com.service.NotificationService.controller;
 
 import com.service.NotificationService.model.TeamsRequest;
 import com.service.NotificationService.service.TeamsService;
+import com.service.NotificationService.util.Constants;
 import com.service.NotificationService.util.ProjectUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,20 +26,8 @@ public class TeamsController {
 
     @PostMapping("/teams/message")
     public ResponseEntity<Object> sendTeamsWebhookNotification(@RequestBody TeamsRequest teamsRequest) {
-        try {
-            boolean response = teamsService.sendTeamsWebhookNotification(teamsRequest.getTitle(), teamsRequest.getHeading(),
-                    teamsRequest.getContent(), teamsRequest.getButtonText(), teamsRequest.getButtonUrl());
-
-            if(response) {
-                LOGGER.info("Message sent successfully");
-                return ProjectUtil.success(Boolean.TRUE);
-            }
-
-        } catch(Exception e) {
-            LOGGER.severe("Error while trying to send email :" + e.getMessage());
-            return ProjectUtil.failure(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return ProjectUtil.success(HttpStatus.BAD_REQUEST);
+        boolean response = teamsService.sendTeamsWebhookNotification(teamsRequest);
+        LOGGER.info(Constants.NOTIFICATION_SUCCESSFUL_MESSAGE);
+        return ProjectUtil.success(response);
     }
-
 }

@@ -3,6 +3,10 @@ package com.service.NotificationService.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.service.NotificationService.exceptions.TeamsException;
+import com.service.NotificationService.model.TeamsRequest;
+import com.service.NotificationService.util.Constants;
+import com.service.NotificationService.util.ProjectUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -23,10 +27,10 @@ public class TeamsService {
     @Value("${teams.webhook.url}")
     private String webhookUrl;
 
-    public boolean sendTeamsWebhookNotification(String title, String heading, String content, String buttonText, String buttonUrl) {
+    public boolean sendTeamsWebhookNotification(TeamsRequest teamsRequest) {
         try {
               // build json request
-              String jsonBody = createJsonBody(title, heading, content, buttonText, buttonUrl);
+              String jsonBody = createJsonBody(teamsRequest);
 
               HttpHeaders headers = new HttpHeaders();
               headers.setContentType(MediaType.APPLICATION_JSON);
@@ -35,50 +39,49 @@ public class TeamsService {
               // create request entity and send request
               HttpEntity<String> requestEntity = new HttpEntity<>(jsonBody, headers);
 
-              ResponseEntity<String> response = restTemplate.exchange(webhookUrl, HttpMethod.POST, requestEntity, String.class);
+              ResponseEntity<String> response = restTemplate.exchange(webhookUrl,
+                      HttpMethod.POST, requestEntity, String.class);
 
-              LOGGER.info("Value is " + response.getStatusCode());
               if (response.getStatusCode() == HttpStatus.OK) {
-                  LOGGER.info("Notification sent successfully");
+                  LOGGER.info(Constants.NOTIFICATION_SUCCESSFUL_MESSAGE);
                   return Boolean.TRUE;
               }
-              LOGGER.severe("Error in teams messaging server");
               return Boolean.FALSE;
         } catch (Exception e) {
-            LOGGER.severe("Error while sending message in sendTeamsWebhookNotification method : " + e.getMessage());
-            return Boolean.FALSE;
+            throw new TeamsException(String.format(Constants.EXCEPTION_MESSAGE, "in sendTeamsWebhookNotification()", e.getMessage()),
+                    ProjectUtil.getCurrentTimeStamp());
         }
     }
 
-    private String createJsonBody(String title, String heading, String content, String buttonText, String buttonUrl) {
+    private String createJsonBody(TeamsRequest teamsRequest) {
         ObjectNode jsonBody = mapper.createObjectNode();
-        jsonBody.put("summary", title);
-        jsonBody.put("themeColor", "0076D7");
-        jsonBody.put("title", title);
+        jsonBody.put(Constants.SUMMARY, teamsRequest.getTitle());
+        jsonBody.put(Constants.THEME_COLOR, "0076D7");
+        jsonBody.put(Constants.TITLE, teamsRequest.getTitle());
 
-        // Create sections array
+        // create sections array
         ArrayNode sections = mapper.createArrayNode();
         ObjectNode section = mapper.createObjectNode();
-        section.put("activityTitle", heading);
-        section.put("text", content);
+        section.put(Constants.ACTIVITY_TITLE, teamsRequest.getHeading());
+        section.put(Constants.TEXT, teamsRequest.getContent());
         sections.add(section);
-        jsonBody.set("sections", sections);
+        jsonBody.set(Constants.SECTIONS, sections);
 
-        // Create potentialAction array
+        // create potentialAction array
         ArrayNode potentialAction = mapper.createArrayNode();
         ObjectNode action = mapper.createObjectNode();
         action.put("@type", "OpenUri");
-        action.put("name", buttonText);
+        action.put(Constants.NAME, teamsRequest.getButtonText());
 
         ArrayNode targets = mapper.createArrayNode();
         ObjectNode target = mapper.createObjectNode();
-        target.put("os", "default");
-        target.put("uri", buttonUrl);
+        target.put("os", Constants.DEFAULT);
+        target.put(Constants.URI, teamsRequest.getButtonUrl());
         targets.add(target);
-        action.set("targets", targets);
+        action.set(Constants.TARGETS, targets);
 
         potentialAction.add(action);
-        jsonBody.set("potentialAction", potentialAction);
+        jsonBody.set(Constants.POTENTIAL_ACTION, potentialAction);
 
         return jsonBody.toString();
     }
