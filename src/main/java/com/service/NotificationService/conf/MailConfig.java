@@ -11,13 +11,13 @@ import java.util.Properties;
 @Configuration
 public class MailConfig {
 
-    @Value("${spring.mail.host}")
+    @Value("${smtp.mail.host}")
     private String host;
 
-    @Value("${spring.mail.user}")
+    @Value("${smtp.mail.user}")
     private String userName;
 
-    @Value("${spring.mail.password}")
+    @Value("${smtp.mail.password}")
     private String password;
     @Bean
     public JavaMailSender getJavaMailSender() {
