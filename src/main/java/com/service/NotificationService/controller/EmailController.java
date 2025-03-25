@@ -6,36 +6,40 @@ import com.service.NotificationService.util.Constants;
 import com.service.NotificationService.util.ProjectUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
-
 @RestController
-@RequestMapping("api/v1")
+@RequestMapping(path = "api/v1")
 public class EmailController {
 
     private final EmailService emailService;
-
-    private static final Logger LOGGER = Logger.getLogger(EmailController.class.getName());
 
     @Autowired
     public EmailController(EmailService emailService) {
         this.emailService = emailService;
     }
 
-    @PostMapping("/send-email")
+    /**
+     * this api sends simple email notification with some subject and content
+     * @param emailRequest contains the email content and receiver's email id
+     * @return success or failure response on the email sent
+     */
+    @PostMapping(path = "/email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> sendEmail(@RequestBody EmailRequest emailRequest) {
         boolean response = emailService.sendEmail(emailRequest);
-        LOGGER.info(Constants.NOTIFICATION_SUCCESSFUL_MESSAGE);
         return ProjectUtil.success(response);
     }
 
-    @PostMapping("/send-template-email")
+    /**
+     * this api sends an email with a defined template with some subject and content
+     * @param emailRequest contains the email content and the receiver's email id
+     * @return success or failure response on the email sent
+     */
+    @PostMapping(path = "/template-email", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> sendTemplateEmail(@RequestBody EmailRequest emailRequest) {
         boolean response = emailService.sendTemplateEmail(emailRequest);
-        LOGGER.info(Constants.NOTIFICATION_SUCCESSFUL_MESSAGE);
         return ProjectUtil.success(response);
     }
 }

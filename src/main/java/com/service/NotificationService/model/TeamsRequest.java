@@ -8,17 +8,17 @@ import lombok.NonNull;
 public class TeamsRequest {
 
     @NonNull
-    String title;
+    private String title;
 
     @NonNull
-    String heading;
+    private String heading;
 
     @NonNull
-    String content;
+    private String content;
 
     @NonNull
-    String buttonText;
+    private String buttonText;
 
     @NonNull
-    String buttonUrl;
+    private String buttonUrl;
 }
