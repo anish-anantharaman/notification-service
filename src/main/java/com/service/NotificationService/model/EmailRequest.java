@@ -15,9 +15,7 @@ public class EmailRequest {
     @NonNull
     private String message;
 
-    @NonNull
     private String buttonText;
 
-    @NonNull
     private String buttonUrl;
 }
