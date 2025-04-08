@@ -3,11 +3,13 @@ package com.service.NotificationService.model;
 import lombok.Data;
 import lombok.NonNull;
 
+import java.util.List;
+
 @Data
 public class EmailRequest {
 
     @NonNull
-    private String toEmail;
+    private List<String> toEmailList;
 
     @NonNull
     private String subject;

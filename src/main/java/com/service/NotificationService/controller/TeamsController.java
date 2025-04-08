@@ -31,7 +31,6 @@ public class TeamsController {
      */
     @PostMapping(path = "/teams/message", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> sendTeamsWebhookNotification(@RequestBody TeamsRequest teamsRequest) {
-        System.out.println(teamsRequest);
         boolean response = teamsService.sendTeamsWebhookNotification(teamsRequest);
         return ProjectUtil.success(response);
     }
