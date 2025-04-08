@@ -37,13 +37,28 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public boolean sendEmail(EmailRequest emailRequest) {
         try {
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
 
-            mailMessage.setTo(emailRequest.getToEmail());
-            mailMessage.setSubject(emailRequest.getSubject());
-            mailMessage.setText(emailRequest.getMessage());
-            mailMessage.setFrom(email);
-            javaMailSender.send(mailMessage);
+            int count = 0;
+            if (emailRequest.getToEmailList().isEmpty()) {
+                throw new EmailServiceException("Recipient email list is empty", ProjectUtil.getCurrentTimeStamp());
+            }
+
+            for(String recipientEmail : emailRequest.getToEmailList()) {
+                SimpleMailMessage mailMessage = new SimpleMailMessage();
+                mailMessage.setTo(recipientEmail);
+                mailMessage.setSubject(emailRequest.getSubject());
+                mailMessage.setText(emailRequest.getMessage());
+                mailMessage.setFrom(email);
+                javaMailSender.send(mailMessage);
+                ++count;
+
+                // limit number of messages per second
+                if(count % 40 == 0) {
+                    Thread.sleep(2000);
+                }
+
+            }
+
             LOGGER.info(Constants.NOTIFICATION_SUCCESSFUL_MESSAGE);
             return Boolean.TRUE;
         } catch (Exception e) {
@@ -55,18 +70,16 @@ public class EmailServiceImpl implements EmailService {
     @Override
     public boolean sendTemplateEmail(EmailRequest emailRequest) {
         try {
-
+            int count = 0;
             if(emailRequest.getButtonUrl() == null || emailRequest.getButtonUrl().isEmpty()
                     || emailRequest.getButtonText() == null || emailRequest.getButtonText().isEmpty()) {
                 throw new EmailServiceException(String.format(Constants.EXCEPTION_MESSAGE, "sendTemplateEmail()",
                         "buttonUrl and/or buttonText are null and/or empty"), ProjectUtil.getCurrentTimeStamp());
             }
-            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
-            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, Boolean.TRUE);
-            helper.setFrom(email);
-            helper.setTo(emailRequest.getToEmail());
-            helper.setSubject(emailRequest.getSubject());
+            if (emailRequest.getToEmailList().isEmpty()) {
+                throw new EmailServiceException("Recipient email list is empty", ProjectUtil.getCurrentTimeStamp());
+            }
 
             Context context = new Context();
             context.setVariable(Constants.SUBJECT, emailRequest.getSubject());
@@ -75,9 +88,23 @@ public class EmailServiceImpl implements EmailService {
             context.setVariable(Constants.BUTTON_TEXT, emailRequest.getButtonText());
 
             String htmlContent = springTemplateEngine.process("email-template", context);
-            helper.setText(htmlContent, Boolean.TRUE);
-            // send the email
-            javaMailSender.send(mimeMessage);
+
+            for(String recipientEmail : emailRequest.getToEmailList()) {
+                MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+                MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, Boolean.TRUE);
+                helper.setFrom(email);
+                helper.setTo(recipientEmail);
+                helper.setSubject(emailRequest.getSubject());
+                helper.setText(htmlContent, Boolean.TRUE);
+                // send the email
+                javaMailSender.send(mimeMessage);
+                ++count;
+
+                if(count % 40 == 0) {
+                    Thread.sleep(2000);
+                }
+            }
+
             LOGGER.info(Constants.NOTIFICATION_SUCCESSFUL_MESSAGE);
             return Boolean.TRUE;
         } catch (Exception e) {
