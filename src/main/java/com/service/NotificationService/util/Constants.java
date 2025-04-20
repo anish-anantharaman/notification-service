@@ -16,6 +16,7 @@ public class Constants {
     public static final String SUCCESS = "success";
     public static final String SUMMARY = "summary";
     public static final String TITLE = "title";
+    public static final String BODY = "body";
     public static final String ACTIVITY_TITLE = "activityTitle";
     public static final String TEXT = "text";
     public static final String SECTIONS = "sections";

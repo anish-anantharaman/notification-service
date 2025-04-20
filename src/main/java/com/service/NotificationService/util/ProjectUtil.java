@@ -12,8 +12,8 @@ public class ProjectUtil {
 
     /**
      * this is the utility method for handling success response
-     * @param data contains the response data
-     * @return success response with data
+     * @param data contains the data
+     * @return success response builder with data
      */
     public static ResponseEntity<Object> success(Object data) {
         Map<String, Object> response = new HashMap<>();
