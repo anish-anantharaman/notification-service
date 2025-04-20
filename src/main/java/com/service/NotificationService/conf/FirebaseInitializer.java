@@ -3,7 +3,7 @@ package com.service.NotificationService.conf;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
-import com.service.NotificationService.exceptions.FirebaseServiceException;
+import com.service.NotificationService.exception.FirebaseServiceException;
 import com.service.NotificationService.util.Constants;
 import com.service.NotificationService.util.ProjectUtil;
 import org.springframework.boot.CommandLineRunner;

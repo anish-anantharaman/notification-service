@@ -1,6 +1,6 @@
 package com.service.NotificationService.service.impl;
 
-import com.service.NotificationService.exceptions.EmailServiceException;
+import com.service.NotificationService.exception.EmailServiceException;
 import com.service.NotificationService.model.EmailRequest;
 import com.service.NotificationService.service.EmailService;
 import com.service.NotificationService.util.Constants;
