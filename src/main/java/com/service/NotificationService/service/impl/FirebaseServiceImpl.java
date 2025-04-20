@@ -1,7 +1,7 @@
 package com.service.NotificationService.service.impl;
 
 import com.google.firebase.messaging.*;
-import com.service.NotificationService.exceptions.FirebaseServiceException;
+import com.service.NotificationService.exception.FirebaseServiceException;
 import com.service.NotificationService.model.FirebaseRequest;
 import com.service.NotificationService.service.FirebaseService;
 import com.service.NotificationService.util.Constants;

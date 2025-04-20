@@ -1,4 +1,4 @@
-package com.service.NotificationService.exceptions;
+package com.service.NotificationService.exception;
 
 import com.service.NotificationService.util.Constants;
 

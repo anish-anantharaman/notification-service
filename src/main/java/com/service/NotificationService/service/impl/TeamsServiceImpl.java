@@ -3,7 +3,7 @@ package com.service.NotificationService.service.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.service.NotificationService.exceptions.TeamsServiceException;
+import com.service.NotificationService.exception.TeamsServiceException;
 import com.service.NotificationService.service.TeamsService;
 
 import com.service.NotificationService.model.TeamsRequest;
