@@ -122,7 +122,7 @@ POST /v1/token-notification
 }
 ```
 
-#### Responses
+## Responses
 
 **Success Response:**
 
